@@ -25,7 +25,7 @@ The raw images from these datasets were preprocessed to create a consistent form
 
 To significantly increase the diversity and size of the forged signature dataset, a multi-faceted approach was used, combining GAN generation with traditional manipulation techniques.
 
-- **GAN Generation**: A trained CycleGAN was used to produce approximately 3,000 synthetic forged signatures from the genuine samples. The `generate_fake_signatures()` function was used to create files named `generated_fake_{:06d}.png`.  
+- **GAN Generation**: A trained CycleGAN was used to produce approximately 3,000 synthetic forged signatures from the genuine samples. The `generate_fake_signatures()` function was used to create files named  like `generated_fake_{:06d}.png`.  
 - **Manipulation Techniques**: To further diversify the dataset, several manipulation techniques were implemented:  
   - Geometric Distortion: Rotation, scaling, and shearing.  
   - Stroke Modification: Morphological operations to alter stroke thickness.  
