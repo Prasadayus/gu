@@ -1,4 +1,4 @@
-# Signature Verification Project Documentation
+# Real vs Fake Signature Detection & Classification
 
 This document outlines the process of creating a signature verification system. It covers dataset creation, model selection, the training process, and a comprehensive evaluation of a real vs. fake signature classification pipeline. The system can detect and classify signatures from unseen documents provided via a URL.
 
