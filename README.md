@@ -101,32 +101,23 @@ To optimize the performance of the signature classification models, Keras Tuner 
 #### InceptionV3 Hyperparameter Tuning
 
 def model_builder_efficientnet(hp):
-inputs = keras.Input(shape=(128, 128, 1))
-x = layers.Lambda(lambda x: tf.repeat(x, 3, axis=-1))(inputs)
-x = base_model_efficientnet(x, training=False)
-x = layers.GlobalAveragePooling2D()(x)
 
-hp_dropout_1 = hp.Float('dropout_1', min_value=0.2, max_value=0.7, step=0.1)
-x = layers.Dropout(hp_dropout_1)(x)
+    inputs = keras.Input(shape=(128, 128, 1))
+    x = layers.Lambda(lambda x: tf.repeat(x, 3, axis=-1))(inputs)
+    x = base_model_efficientnet(x, training=False)
+    x = layers.GlobalAveragePooling2D()(x)
 
-hp_dense_units_1 = hp.Int('dense_units_1', min_value=16, max_value=256, step=32)
-x = layers.Dense(hp_dense_units_1, activation='relu')(x)
+    hp_dropout_1 = hp.Float('dropout_1', min_value=0.2, max_value=0.7, step=0.1)
+    x = layers.Dropout(hp_dropout_1)(x)
 
-outputs = layers.Dense(1, activation='sigmoid')(x)
-model = keras.Model(inputs, outputs)
+    hp_dense_units_1 = hp.Int('dense_units_1', min_value=16, max_value=256, step=32)
+    x = layers.Dense(hp_dense_units_1, activation='relu')(x)
 
-hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4, 1e-5])
-optimizer = keras.optimizers.Adam(learning_rate=hp_learning_rate)
+    outputs = layers.Dense(1, activation='sigmoid')(x)
+    model = keras.Model(inputs, outputs)
 
-# Add AUC metric
-auc_metric = tf.keras.metrics.AUC(curve="ROC", name="auc")  
-model.compile(
-    optimizer=optimizer,
-    loss='binary_crossentropy',
-    metrics=['accuracy', auc_metric]
-)
-return model
-
+    hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4, 1e-5])
+    optimizer = keras.optimizers.Adam(learning_rate=hp_learning_rate)
 
 **Best Hyperparameters for EfficientNetV2:**  
 - Learning rate: 0.01  
