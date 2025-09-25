@@ -100,6 +100,41 @@ To optimize the performance of the signature classification models, Keras Tuner 
 
 #### InceptionV3 Hyperparameter Tuning
 
+```python
+def model_builder_inception(hp):
+inputs = keras.Input(shape=(128, 128, 1))
+# Convert grayscale to RGB
+x = layers.Lambda(lambda x: tf.repeat(x, 3, axis=-1))(inputs)
+
+# Preprocess input for InceptionV3 (scale to [-1, 1])
+x = preprocess_input(x)
+
+x = base_model_inception(x, training=False)
+x = layers.GlobalAveragePooling2D()(x)
+
+hp_dropout_1 = hp.Float('dropout_1', min_value=0.2, max_value=0.7, step=0.1)
+x = layers.Dropout(hp_dropout_1)(x)
+
+hp_dense_units_1 = hp.Int('dense_units_1', min_value=32, max_value=512, step=64)
+x = layers.Dense(hp_dense_units_1, activation='relu')(x)
+
+outputs = layers.Dense(1, activation='sigmoid')(x)
+model = keras.Model(inputs, outputs)
+
+# Only Adam optimizer with tunable learning rate
+hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4, 1e-5])
+
+```
+
+
+**Best Hyperparameters for InceptionV3:**  
+- Learning rate: 0.001  
+- First dropout rate: 0.2  
+- First dense units: 224  
+
+#### EfficientNetV2 Hyperparameter Tuning
+
+```python
 def model_builder_efficientnet(hp):
 
     inputs = keras.Input(shape=(128, 128, 1))
@@ -117,12 +152,14 @@ def model_builder_efficientnet(hp):
     model = keras.Model(inputs, outputs)
 
     hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4, 1e-5])
-    optimizer = keras.optimizers.Adam(learning_rate=hp_learning_rate)
+```
 
 **Best Hyperparameters for EfficientNetV2:**  
 - Learning rate: 0.01  
 - First dropout rate: 0.3  
 - First dense units: 112  
+
+
 
 ### 3.3. YOLOv11s Fine-Tuning
 
